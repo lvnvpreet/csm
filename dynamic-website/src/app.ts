@@ -6,8 +6,11 @@ import { AdminController } from './controllers/adminController';
 import { PageController } from './controllers/pageController';
 import { TemplateController } from './controllers/templateController';
 import { AuthController } from './controllers/authController';
+import { MediaController } from './controllers/mediaController';
 import { AppDataSource } from "./config/db"
 import { authMiddleware, adminMiddleware } from './middlewares/authMiddleare';
+import { upload } from './config/cloudinary';
+import path from 'path';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -26,14 +29,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.set('view engine', 'ejs');
-app.set('views', './src/views');
-app.use(express.static('src/public'));
+app.set('views', path.join(__dirname, 'views'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Controllers
 const adminController = new AdminController();
 const pageController = new PageController();
 const templateController = new TemplateController();
 const authController = new AuthController();
+const mediaController = new MediaController();
 
 // Auth routes
 app.get('/login', (req, res) => res.render('auth/login'));
@@ -62,6 +66,20 @@ app.get('/admin/templates', templateController.getTemplates.bind(templateControl
 app.get('/admin/templates/new', templateController.getTemplateEditor.bind(templateController));
 app.get('/admin/templates/edit/:id', templateController.getTemplateEditor.bind(templateController));
 app.post('/admin/templates/save', templateController.saveTemplate.bind(templateController));
+
+// Media routes
+app.post('/admin/media/upload', 
+    authMiddleware, 
+    adminMiddleware, 
+    upload.single('file'), 
+    mediaController.uploadMedia.bind(mediaController)
+);
+
+app.delete('/admin/media/:publicId', 
+    authMiddleware, 
+    adminMiddleware, 
+    mediaController.deleteMedia.bind(mediaController)
+);
 
 // Public routes
 app.get('/page/:slug', pageController.getDynamicPage.bind(pageController));

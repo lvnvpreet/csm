@@ -1,0 +1,17 @@
+<%- include('../../layouts/main') %>
+
+<div class="media-manager">
+    <h1>Media Manager</h1>
+    
+    <div class="upload-section">
+        <h2>Upload New Media</h2>
+        <form action="/admin/media/upload" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*">
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+    </div>
+
+    <div class="media-list">
+        <!-- Add media list display here -->
+    </div>
+</div>
