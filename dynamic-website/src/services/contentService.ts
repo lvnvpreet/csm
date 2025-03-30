@@ -1,39 +1,29 @@
-import { Content } from '../models/content';
+import { Content } from '../entities/Content';
+import { AppDataSource } from '../config/database';
 
 export class ContentService {
-    private contents: Content[] = [];
+    private contentRepository = AppDataSource.getRepository(Content);
 
-    constructor() {
-        // Initialize with some default content if needed
+    public async getAllContents(): Promise<Content[]> {
+        return await this.contentRepository.find();
     }
 
-    public getAllContents(): Content[] {
-        return this.contents;
+    public async getContentById(id: number): Promise<Content | null> {
+        return await this.contentRepository.findOneBy({ id });
     }
 
-    public getContentById(id: number): Content | undefined {
-        return this.contents.find(content => content.id === id);
+    public async createContent(newContent: Partial<Content>): Promise<Content> {
+        const content = this.contentRepository.create(newContent);
+        return await this.contentRepository.save(content);
     }
 
-    public createContent(newContent: Content): void {
-        this.contents.push(newContent);
+    public async updateContent(id: number, updatedContent: Partial<Content>): Promise<boolean> {
+        const result = await this.contentRepository.update(id, updatedContent);
+        return result.affected ? result.affected > 0 : false;
     }
 
-    public updateContent(id: number, updatedContent: Content): boolean {
-        const index = this.contents.findIndex(content => content.id === id);
-        if (index !== -1) {
-            this.contents[index] = updatedContent;
-            return true;
-        }
-        return false;
-    }
-
-    public deleteContent(id: number): boolean {
-        const index = this.contents.findIndex(content => content.id === id);
-        if (index !== -1) {
-            this.contents.splice(index, 1);
-            return true;
-        }
-        return false;
+    public async deleteContent(id: number): Promise<boolean> {
+        const result = await this.contentRepository.delete(id);
+        return result.affected ? result.affected > 0 : false;
     }
 }
