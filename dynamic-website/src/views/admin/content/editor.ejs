@@ -1,8 +1,10 @@
-<%- include('../../layouts/main') %>
+<%- include('../../layouts/main', {
+    title: content ? 'Edit Content' : 'New Content',
+    page: 'admin',
+    headerTitle: content ? 'Edit Content' : 'New Content'
+}) %>
 
 <div class="content-editor">
-    <h1><%= content ? 'Edit Content' : 'New Content' %></h1>
-    
     <form action="/admin/content/save" method="POST" class="editor-form">
         <% if (content) { %>
             <input type="hidden" name="contentId" value="<%= content.id %>">
@@ -18,29 +20,54 @@
             <label for="slug">URL Slug</label>
             <input type="text" id="slug" name="slug" 
                 value="<%= content?.slug || '' %>" required>
+            <small class="form-help">This will be used in the URL: /page/your-slug</small>
         </div>
 
         <div class="form-group">
             <label for="template">Template</label>
             <select id="template" name="template" required>
                 <option value="">Select a template</option>
-                <option value="default" <%= content?.template === 'default' ? 'selected' : '' %>>
-                    Default
-                </option>
-                <option value="blog" <%= content?.template === 'blog' ? 'selected' : '' %>>
-                    Blog
-                </option>
+                <% templates.forEach(template => { %>
+                    <option value="<%= template.id %>" 
+                        <%= content?.templateId === template.id ? 'selected' : '' %>>
+                        <%= template.name %>
+                    </option>
+                <% }) %>
             </select>
         </div>
 
         <div class="form-group">
             <label for="body">Content</label>
-            <textarea id="body" name="body" rows="10" required><%= content?.body || '' %></textarea>
+            <textarea id="body" name="body" rows="15" required><%= content?.body || '' %></textarea>
+        </div>
+
+        <div class="media-section">
+            <button type="button" class="btn btn-secondary" onclick="openMediaManager()">
+                Insert Media
+            </button>
         </div>
 
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Save</button>
             <a href="/admin/content" class="btn btn-secondary">Cancel</a>
+            <% if (content) { %>
+                <a href="/page/<%= content.slug %>" class="btn btn-secondary" target="_blank">
+                    Preview
+                </a>
+            <% } %>
         </div>
     </form>
 </div>
+
+<script>
+function openMediaManager() {
+    window.open('/admin/media?select=true', 'mediaManager', 
+        'width=800,height=600,resizable=yes');
+}
+
+function insertMedia(url) {
+    const textarea = document.getElementById('body');
+    const imageTag = `\n<img src="${url}" alt="Image">\n`;
+    textarea.value = textarea.value + imageTag;
+}
+</script>

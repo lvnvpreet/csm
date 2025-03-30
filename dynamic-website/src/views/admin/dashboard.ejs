@@ -1,39 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="/css/styles.css">
-</head>
-<body>
-    <header>
-        <h1>Admin Dashboard</h1>
-        <nav>
-            <ul>
-                <li><a href="/admin/dashboard">Dashboard</a></li>
-                <li><a href="/admin/editor">Content Editor</a></li>
-                <li><a href="/logout">Logout</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section>
-            <h2>Welcome to the Admin Dashboard</h2>
-            <p>Here you can manage your website content dynamically.</p>
-        </section>
-        <section>
-            <h3>Recent Activities</h3>
-            <ul>
-                <li>Updated content on homepage</li>
-                <li>Added new blog post</li>
-                <li>Deleted outdated page</li>
-            </ul>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2023 Your Website Name. All rights reserved.</p>
-    </footer>
-    <script src="/js/scripts.js"></script>
-</body>
-</html>
+<% layout('../layouts/main') %>
+
+<% contentFor('styles') %>
+<link rel="stylesheet" href="/css/dashboard.css">
+
+<% contentFor('body') %>
+<div class="dashboard">
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <h3>Content</h3>
+            <p class="stat-number"><%= typeof contentCount !== 'undefined' ? contentCount : 0 %></p>
+            <a href="/admin/content" class="btn btn-primary">Manage Content</a>
+        </div>
+
+        <div class="stat-card">
+            <h3>Templates</h3>
+            <p class="stat-number"><%= typeof templateCount !== 'undefined' ? templateCount : 0 %></p>
+            <a href="/admin/templates" class="btn btn-primary">Manage Templates</a>
+        </div>
+
+        <div class="stat-card">
+            <h3>Media Files</h3>
+            <p class="stat-number"><%= typeof mediaCount !== 'undefined' ? mediaCount : 0 %></p>
+            <a href="/admin/media" class="btn btn-primary">Manage Media</a>
+        </div>
+    </div>
+
+    <div class="recent-activity">
+        <h2>Recent Activity</h2>
+        <div class="activity-list">
+            <% if (recentActivities && recentActivities.length > 0) { %>
+                <% recentActivities.forEach(activity => { %>
+                    <div class="activity-item">
+                        <span class="activity-time"><%= activity.timestamp.toLocaleString() %></span>
+                        <span class="activity-type"><%= activity.type %></span>
+                        <span class="activity-description"><%= activity.description %></span>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <p>No recent activity</p>
+            <% } %>
+        </div>
+    </div>
+
+    <div class="quick-actions">
+        <h2>Quick Actions</h2>
+        <div class="action-buttons">
+            <a href="/admin/content/new" class="btn btn-primary">Create New Content</a>
+            <a href="/admin/templates/new" class="btn btn-secondary">Create New Template</a>
+            <a href="/admin/media/upload" class="btn btn-secondary">Upload Media</a>
+        </div>
+    </div>
+</div>
+
+<% contentFor('scripts') %>
+<script src="/js/dashboard.js"></script>

@@ -35,6 +35,11 @@ app.use(expressLayouts);
 app.set('layout', 'layouts/main');
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+
+// IMPORTANT: Add this line to extract the body
+app.set('layout extractScripts', true);
+app.set('layout extractStyles', true);
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Controllers

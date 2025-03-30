@@ -2,6 +2,7 @@ import { DataSource } from "typeorm"
 import * as dotenv from "dotenv"
 import { Content } from "../models/content"
 import { Template } from "../models/template"
+import { User } from "../models/user"  // Add this import
 
 dotenv.config()
 
@@ -14,7 +15,7 @@ export const AppDataSource = new DataSource({
     database: process.env.DB_NAME || "dynamic_website",
     synchronize: true,
     logging: true,
-    entities: [Content, Template],
+    entities: [Content, Template, User],  // Add User to entities array
     subscribers: [],
     migrations: [],
 })

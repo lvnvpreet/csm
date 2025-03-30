@@ -26,4 +26,13 @@ export class ContentService {
         const result = await this.contentRepository.delete(id);
         return result.affected ? result.affected > 0 : false;
     }
+
+    public async getContentCount(): Promise<number> {
+        try {
+            return await this.contentRepository.count();
+        } catch (error) {
+            console.error('Error getting content count:', error);
+            throw error;
+        }
+    }
 }

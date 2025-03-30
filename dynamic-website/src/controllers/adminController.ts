@@ -1,23 +1,38 @@
 import { Request, Response } from 'express';
 import { ContentService } from '../services/contentService';
 import { TemplateService } from '../services/templateService';
+import { MediaService } from '../services/mediaService';
+import { ActivityService } from '../services/activityService';
 
 export class AdminController {
     private contentService: ContentService;
     private templateService: TemplateService;
+    private mediaService: MediaService;
+    private activityService: ActivityService;
 
     constructor() {
         this.contentService = new ContentService();
         this.templateService = new TemplateService();
+        this.mediaService = new MediaService();
+        this.activityService = new ActivityService();
     }
 
     public async getDashboard(req: Request, res: Response) {
         try {
-            const contents = await this.contentService.getAllContents();
-            res.render('admin/dashboard', { 
+            const contentCount = await this.contentService.getContentCount();
+            const templateCount = await this.templateService.getTemplateCount();
+            const mediaCount = await this.mediaService.getMediaCount();
+            const recentActivities = await this.activityService.getRecentActivities();
+
+            res.render('admin/dashboard', {
                 title: 'Admin Dashboard',
-                page: 'dashboard',
-                contents 
+                page: 'admin',
+                headerTitle: 'Admin Dashboard',
+                contentCount,
+                templateCount,
+                mediaCount,
+                recentActivities,
+                user: req.user
             });
         } catch (error) {
             console.error("Dashboard error:", error);

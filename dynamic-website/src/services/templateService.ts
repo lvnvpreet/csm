@@ -26,4 +26,13 @@ export class TemplateService {
         const result = await this.templateRepository.delete(id);
         return result.affected ? result.affected > 0 : false;
     }
+
+    public async getTemplateCount(): Promise<number> {
+        try {
+            return await this.templateRepository.count();
+        } catch (error) {
+            console.error('Error getting template count:', error);
+            throw error;
+        }
+    }
 }

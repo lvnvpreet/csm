@@ -5,29 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= typeof title !== 'undefined' ? title : 'Dynamic Website' %></title>
     <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="/css/admin.css">
-    <% if(typeof page !== 'undefined' && page.includes('media')) { %>
-        <link rel="stylesheet" href="/css/media-manager.css">
+    <% if(typeof page !== 'undefined') { %>
+        <% if(page === 'admin') { %>
+            <link rel="stylesheet" href="/css/admin.css">
+        <% } %>
+        <% if(page === 'media') { %>
+            <link rel="stylesheet" href="/css/media-manager.css">
+        <% } %>
     <% } %>
+    <%- defineContent('styles') %>
 </head>
 <body>
     <header>
-        <h1>My Dynamic Website</h1>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/admin/dashboard">Dashboard</a></li>
-                <li><a href="/admin/content">Content</a></li>
-                <li><a href="/admin/templates">Templates</a></li>
-                <li><a href="/logout">Logout</a></li>
-            </ul>
-        </nav>
+        <div class="header-content">
+            <h1><%= typeof headerTitle !== 'undefined' ? headerTitle : 'Dynamic Website' %></h1>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <% if (typeof user !== 'undefined' && user) { %>
+                        <li><a href="/admin/dashboard">Dashboard</a></li>
+                        <li><a href="/admin/content">Content</a></li>
+                        <li><a href="/admin/templates">Templates</a></li>
+                        <li><a href="/admin/media">Media</a></li>
+                        <li><a href="/logout">Logout</a></li>
+                    <% } else { %>
+                        <li><a href="/login">Login</a></li>
+                    <% } %>
+                </ul>
+            </nav>
+        </div>
     </header>
-    <main>
+
+    <main class="container">
+        <% if (typeof messages !== 'undefined' && messages.length > 0) { %>
+            <div class="messages">
+                <% messages.forEach(function(msg) { %>
+                    <div class="alert alert-<%= msg.type %>">
+                        <%= msg.text %>
+                    </div>
+                <% }) %>
+            </div>
+        <% } %>
+
         <%- body %>
     </main>
+
     <footer>
-        <p>&copy; <%= new Date().getFullYear() %> My Dynamic Website</p>
+        <p>&copy; <%= new Date().getFullYear() %> Dynamic Website. All rights reserved.</p>
     </footer>
+
+    <script src="/js/main.js"></script>
+    <%- defineContent('scripts') %>
 </body>
 </html>
