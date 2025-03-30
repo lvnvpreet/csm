@@ -3,32 +3,34 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 @Entity()
 export class Content {
     @PrimaryGeneratedColumn()
-    id: number;
+    id!: number;
 
     @Column()
-    title: string;
+    title!: string;
 
     @Column('text')
-    body: string;
+    body!: string;
 
     @Column()
-    author: string;
+    author!: string;
 
     @Column()
-    template: string;
+    template!: string;
 
     @Column()
-    slug: string;
+    slug!: string;
 
     @CreateDateColumn()
-    createdAt: Date;
+    createdAt!: Date;
 
     @UpdateDateColumn()
-    updatedAt: Date;
+    updatedAt!: Date;
+
+    constructor(partial: Partial<Content> = {}) {
+        Object.assign(this, partial);
+    }
 }
 
 export class ContentModel {
     constructor(public content: Content) {}
-
-    // Additional methods for content manipulation can be added here
 }

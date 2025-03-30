@@ -1,5 +1,5 @@
-import { Content } from '../entities/Content';
-import { AppDataSource } from '../config/database';
+import { Content } from '../models/content';
+import { AppDataSource } from '../config/db';
 
 export class ContentService {
     private contentRepository = AppDataSource.getRepository(Content);

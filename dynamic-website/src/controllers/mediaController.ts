@@ -20,7 +20,8 @@ export class MediaController {
                 publicId: result.public_id
             });
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+            res.status(500).json({ message: errorMessage });
         }
     }
 
@@ -30,7 +31,8 @@ export class MediaController {
             const result = await this.mediaService.deleteFile(publicId);
             res.json({ success: result });
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+            res.status(500).json({ message: errorMessage });
         }
     }
 }

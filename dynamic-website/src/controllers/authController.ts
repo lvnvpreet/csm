@@ -11,6 +11,7 @@ export class AuthController {
     public async login(req: Request, res: Response) {
         try {
             const { email, password } = req.body;
+            console.log('Login attempt with email:', email); // Debugging line
             const token = await this.authService.login(email, password);
             
             if (!token) {
@@ -27,6 +28,7 @@ export class AuthController {
     public async register(req: Request, res: Response) {
         try {
             const { email, password } = req.body;
+            console.log('Registration attempt with email:', email); // Debugging line
             await this.authService.register(email, password);
             res.redirect('/login');
         } catch (error) {

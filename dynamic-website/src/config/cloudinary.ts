@@ -10,10 +10,12 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  params: {
-    folder: 'dynamic-website',
-    allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'],
-    transformation: [{ width: 1000, quality: 'auto' }]
+  params: async (req, file) => {
+    return {
+      public_id: `dynamic-website/${Date.now()}-${file.originalname}`,
+      format: file.mimetype.split('/')[1],
+      resource_type: 'auto'
+    };
   }
 });
 

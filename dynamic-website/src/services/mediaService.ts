@@ -1,21 +1,22 @@
 import { UploadApiResponse, v2 as cloudinary } from 'cloudinary';
 
 export class MediaService {
-    async uploadFile(file: Express.Multer.File): Promise<UploadApiResponse> {
+    public async uploadFile(file: Express.Multer.File): Promise<UploadApiResponse> {
         try {
-            const result = await cloudinary.uploader.upload(file.path);
-            return result;
+            return await cloudinary.uploader.upload(file.path);
         } catch (error) {
-            throw new Error(`Failed to upload file: ${error.message}`);
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+            throw new Error(`Failed to upload file: ${errorMessage}`);
         }
     }
 
-    async deleteFile(publicId: string): Promise<boolean> {
+    public async deleteFile(publicId: string): Promise<boolean> {
         try {
             const result = await cloudinary.uploader.destroy(publicId);
             return result.result === 'ok';
         } catch (error) {
-            throw new Error(`Failed to delete file: ${error.message}`);
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+            throw new Error(`Failed to delete file: ${errorMessage}`);
         }
     }
 

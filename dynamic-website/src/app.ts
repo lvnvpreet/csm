@@ -2,6 +2,7 @@ import "reflect-metadata"
 import express from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
+import expressLayouts from 'express-ejs-layouts';
 import { AdminController } from './controllers/adminController';
 import { PageController } from './controllers/pageController';
 import { TemplateController } from './controllers/templateController';
@@ -28,6 +29,10 @@ AppDataSource.initialize()
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+
+// Configure EJS with layouts
+app.use(expressLayouts);
+app.set('layout', 'layouts/main');
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -40,8 +45,8 @@ const authController = new AuthController();
 const mediaController = new MediaController();
 
 // Auth routes
-app.get('/login', (req, res) => res.render('auth/login'));
-app.get('/register', (req, res) => res.render('auth/register'));
+app.get('/login', (req, res) => res.render('auth/login', { title: 'Login', layout: false }));
+app.get('/register', (req, res) => res.render('auth/register', { title: 'Register', layout: false }));
 app.post('/login', authController.login.bind(authController));
 app.post('/register', authController.register.bind(authController));
 app.get('/logout', authController.logout.bind(authController));
@@ -51,7 +56,7 @@ app.use('/admin', authMiddleware, adminMiddleware);
 
 // Admin routes
 app.get('/admin/dashboard', adminController.getDashboard.bind(adminController));
-app.get('/admin/editor/:id', adminController.getEditor.bind(adminController));
+app.get('/admin/editor/:id', adminController.getContentEditor.bind(adminController));
 app.post('/admin/update-content', adminController.updateContent.bind(adminController));
 
 // Content management routes
@@ -83,6 +88,7 @@ app.delete('/admin/media/:publicId',
 
 // Public routes
 app.get('/page/:slug', pageController.getDynamicPage.bind(pageController));
+app.get('/', (req, res) => res.redirect('/admin/dashboard'));
 
 // Start the server
 app.listen(port, () => {
