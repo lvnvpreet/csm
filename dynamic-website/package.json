@@ -6,7 +6,11 @@
   "scripts": {
     "start": "ts-node src/app.ts",
     "build": "tsc",
-    "test": "echo \"No tests specified\" && exit 0"
+    "test": "echo \"No tests specified\" && exit 0",
+    "deploy": "bash scripts/deploy.sh",
+    "deploy:prod": "DEPLOY_ENV=production bash scripts/deploy.sh",
+    "docker:build": "docker build -t dynamic-website -f .docker/Dockerfile .",
+    "docker:run": "docker-compose -f .docker/docker-compose.yml up"
   },
   "dependencies": {
     "@types/cookie-parser": "^1.4.8",

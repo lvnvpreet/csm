@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  app:
+    build: 
+      context: ..
+      dockerfile: .docker/Dockerfile
+    ports:
+      - "80:3000"
+    environment:
+      - NODE_ENV=production
+    restart: always
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "443:443"
+    volumes:
+      - ../nginx/conf.d:/etc/nginx/conf.d
+      - ../nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - app
+    restart: always
+
+volumes:
+  pgdata:
