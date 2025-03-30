@@ -13,6 +13,7 @@ import { authMiddleware, adminMiddleware } from './middlewares/authMiddleare';
 import { upload } from './config/cloudinary';
 import path from 'path';
 
+// Initialize express
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -30,11 +31,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-// Configure EJS with layouts
-app.use(expressLayouts);
-app.set('layout', 'layouts/main');
+// Set up EJS and layouts
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.use(expressLayouts);
+app.set('layout', 'layouts/main');  // Set default layout
 
 // IMPORTANT: Add this line to extract the body
 app.set('layout extractScripts', true);
