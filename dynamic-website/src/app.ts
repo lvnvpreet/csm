@@ -7,7 +7,7 @@ import { PageController } from './controllers/pageController';
 import { TemplateController } from './controllers/templateController';
 import { AuthController } from './controllers/authController';
 import { AppDataSource } from "./config/db"
-import { authMiddleware, adminMiddleware } from './middleware/auth';
+import { authMiddleware, adminMiddleware } from './middlewares/authMiddleare';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -49,6 +49,13 @@ app.use('/admin', authMiddleware, adminMiddleware);
 app.get('/admin/dashboard', adminController.getDashboard.bind(adminController));
 app.get('/admin/editor/:id', adminController.getEditor.bind(adminController));
 app.post('/admin/update-content', adminController.updateContent.bind(adminController));
+
+// Content management routes
+app.get('/admin/content', authMiddleware, adminMiddleware, adminController.getContentList.bind(adminController));
+app.get('/admin/content/new', authMiddleware, adminMiddleware, adminController.getContentEditor.bind(adminController));
+app.get('/admin/content/edit/:id', authMiddleware, adminMiddleware, adminController.getContentEditor.bind(adminController));
+app.post('/admin/content/save', authMiddleware, adminMiddleware, adminController.saveContent.bind(adminController));
+app.post('/admin/content/delete/:id', authMiddleware, adminMiddleware, adminController.deleteContent.bind(adminController));
 
 // Template routes
 app.get('/admin/templates', templateController.getTemplates.bind(templateController));

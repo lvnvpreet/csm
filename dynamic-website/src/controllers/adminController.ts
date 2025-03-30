@@ -11,34 +11,69 @@ export class AdminController {
     public async getDashboard(req: Request, res: Response) {
         try {
             const contents = await this.contentService.getAllContents();
-            res.render('admin/dashboard', { contents });
+            res.render('admin/dashboard', { 
+                title: 'Admin Dashboard',
+                contents 
+            });
         } catch (error) {
             res.status(500).send('Server error');
         }
     }
 
-    public async getEditor(req: Request, res: Response) {
+    public async getContentList(req: Request, res: Response) {
+        try {
+            const contents = await this.contentService.getAllContents();
+            res.render('admin/content/list', { 
+                title: 'Content Management',
+                contents 
+            });
+        } catch (error) {
+            res.status(500).send('Server error');
+        }
+    }
+
+    public async getContentEditor(req: Request, res: Response) {
         try {
             const contentId = parseInt(req.params.id);
-            const content = await this.contentService.getContentById(contentId);
-            if (!content) {
-                return res.status(404).send('Content not found');
-            }
-            res.render('admin/editor', { content });
+            const content = contentId ? 
+                await this.contentService.getContentById(contentId) : 
+                null;
+            res.render('admin/content/editor', { 
+                title: content ? 'Edit Content' : 'New Content',
+                content 
+            });
         } catch (error) {
             res.status(500).send('Server error');
         }
     }
 
-    public async updateContent(req: Request, res: Response) {
+    public async saveContent(req: Request, res: Response) {
         try {
             const contentId = parseInt(req.body.contentId);
-            const success = await this.contentService.updateContent(contentId, req.body);
-            if (success) {
-                res.redirect('/admin/dashboard');
+            const contentData = {
+                title: req.body.title,
+                body: req.body.body,
+                author: req.user?.email || 'Anonymous',
+                template: req.body.template,
+                slug: req.body.slug
+            };
+
+            if (contentId) {
+                await this.contentService.updateContent(contentId, contentData);
             } else {
-                res.status(404).send('Content not found');
+                await this.contentService.createContent(contentData);
             }
+            res.redirect('/admin/content');
+        } catch (error) {
+            res.status(500).send('Server error');
+        }
+    }
+
+    public async deleteContent(req: Request, res: Response) {
+        try {
+            const contentId = parseInt(req.params.id);
+            await this.contentService.deleteContent(contentId);
+            res.redirect('/admin/content');
         } catch (error) {
             res.status(500).send('Server error');
         }
