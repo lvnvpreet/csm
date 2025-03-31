@@ -11,7 +11,7 @@ import { MediaController } from './controllers/mediaController';
 import { AppDataSource } from "./config/db"
 import { authMiddleware, adminMiddleware } from './middlewares/authMiddleare';
 import { upload } from './config/cloudinary';
-import path from 'path';
+import path from 'path'; // Added semicolon
 
 // Initialize express
 const app = express();
@@ -91,6 +91,16 @@ app.delete('/admin/media/:publicId',
     adminMiddleware, 
     mediaController.deleteMedia.bind(mediaController)
 );
+
+// Add GET route for media manager
+app.get('/admin/media',
+    authMiddleware,
+    adminMiddleware,
+    // Assuming a getMediaManager method exists or will be created
+    (req, res) => mediaController.getMediaManager ? mediaController.getMediaManager(req, res) : res.render('admin/media/upload', { title: 'Media Manager', selectMode: req.query.select === 'true' })
+    // Fallback rendering upload view if method doesn't exist yet
+);
+
 
 // Public routes
 app.get('/page/:slug', pageController.getDynamicPage.bind(pageController));

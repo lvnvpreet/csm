@@ -1,9 +1,3 @@
-<%- include('../../layouts/main', {
-    title: content ? 'Edit Content' : 'New Content',
-    page: 'admin',
-    headerTitle: content ? 'Edit Content' : 'New Content'
-}) %>
-
 <div class="content-editor">
     <form action="/admin/content/save" method="POST" class="editor-form">
         <% if (content) { %>
@@ -12,13 +6,13 @@
 
         <div class="form-group">
             <label for="title">Title</label>
-            <input type="text" id="title" name="title" 
+            <input type="text" id="title" name="title"
                 value="<%= content?.title || '' %>" required>
         </div>
 
         <div class="form-group">
             <label for="slug">URL Slug</label>
-            <input type="text" id="slug" name="slug" 
+            <input type="text" id="slug" name="slug"
                 value="<%= content?.slug || '' %>" required>
             <small class="form-help">This will be used in the URL: /page/your-slug</small>
         </div>
@@ -28,7 +22,7 @@
             <select id="template" name="template" required>
                 <option value="">Select a template</option>
                 <% templates.forEach(template => { %>
-                    <option value="<%= template.id %>" 
+                    <option value="<%= template.id %>"
                         <%= content?.templateId === template.id ? 'selected' : '' %>>
                         <%= template.name %>
                     </option>
@@ -61,7 +55,7 @@
 
 <script>
 function openMediaManager() {
-    window.open('/admin/media?select=true', 'mediaManager', 
+    window.open('/admin/media?select=true', 'mediaManager',
         'width=800,height=600,resizable=yes');
 }
 
